@@ -14,6 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Update version in manifest.json
+        run: |
+          # Read the current manifest
+          manifest=$(cat manifest.json)
+          # Update the version
+          echo "$manifest" | jq --arg version "${{ inputs.version }}" '.version = $version' > manifest.json
+          echo "Updated version to ${{ inputs.version }} in manifest.json"
+
       - name: Create ZIP file
         run: |
           zip -r chrome-extension.zip . -x "*.git*" -x "*.DS_Store" -x "node_modules/*"
@@ -26,6 +34,41 @@ jobs:
           client-id: ${{ secrets.CLIENT_ID }}
           client-secret: ${{ secrets.CLIENT_SECRET }}
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
+
+      - name: Verify publication
+        run: |
+          # Get access token
+          TOKEN_RESPONSE=$(curl -s -X POST \
+            -d "client_id=${{ secrets.CLIENT_ID }}" \
+            -d "client_secret=${{ secrets.CLIENT_SECRET }}" \
+            -d "refresh_token=${{ secrets.REFRESH_TOKEN }}" \
+            -d "grant_type=refresh_token" \
+            https://oauth2.googleapis.com/token)
+          
+          ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r '.access_token')
+          
+          # Get extension details
+          EXTENSION_INFO=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
+            "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.EXTENSION_ID }}")
+          
+          # Extract and display information
+          STORE_VERSION=$(echo $EXTENSION_INFO | jq -r '.version')
+          STATUS=$(echo $EXTENSION_INFO | jq -r '.status[]')
+          LAST_UPDATED=$(echo $EXTENSION_INFO | jq -r '.lastUpdated')
+          
+          echo "Extension Details:"
+          echo "-----------------"
+          echo "Version in Chrome Web Store: $STORE_VERSION"
+          echo "Status: $STATUS"
+          echo "Last Updated: $LAST_UPDATED"
+          echo "Expected Version: ${{ inputs.version }}"
+          
+          if [ "$STORE_VERSION" = "${{ inputs.version }}" ]; then
+            echo "✅ Version matches! Publication successful."
+          else
+            echo "❌ Version mismatch. Expected: ${{ inputs.version }}, Found: $STORE_VERSION"
+            exit 1
+          fi
 
       - name: Clean up
         if: always()
