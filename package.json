@@ -1,0 +1,21 @@
+{
+  "name": "harmonydata-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for sending selected text to Harmony",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "test": "echo 'No tests specified'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harmonydata/harmonydata-chrome-extension.git"
+  },
+  "keywords": [
+    "harmony",
+    "chrome-extension",
+    "data-harmonization"
+  ],
+  "author": "Harmony Data",
+  "license": "MIT"
+} 

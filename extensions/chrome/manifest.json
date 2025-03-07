@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Send to Harmony",
+  "version": "1.0",
+  "description": "Send selected text to Harmony with a right-click. For PDFs, use the popup to paste your selected text.",
+  "permissions": ["contextMenus", "storage", "scripting", "activeTab", "tabs"],
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    },
+    "context_menus": [
+      {
+        "id": "sendToHarmony",
+        "title": "Send to Harmony",
+        "contexts": ["selection"]
+      }
+    ]
+  },
+  "host_permissions": []
+}

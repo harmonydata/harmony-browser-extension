@@ -1,0 +1,26 @@
+name: Publish Chrome Extension
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create ZIP file
+        run: |
+          zip -r chrome-extension.zip . -x "*.git*" -x "*.DS_Store" -x "node_modules/*"
+
+      - name: Publish to Chrome Web Store
+        uses: trmcnvn/chrome-addon@v2
+        with:
+          extension: ${{ secrets.EXTENSION_ID }}
+          zip: chrome-extension.zip
+          clientId: ${{ secrets.CLIENT_ID }}
+          clientSecret: ${{ secrets.CLIENT_SECRET }}
+          refreshToken: ${{ secrets.REFRESH_TOKEN }} 
