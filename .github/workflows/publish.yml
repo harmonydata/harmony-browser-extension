@@ -1,10 +1,12 @@
 name: Publish Chrome Extension
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -21,6 +23,12 @@ jobs:
         with:
           extension: ${{ secrets.EXTENSION_ID }}
           zip: chrome-extension.zip
-          clientId: ${{ secrets.CLIENT_ID }}
-          clientSecret: ${{ secrets.CLIENT_SECRET }}
-          refreshToken: ${{ secrets.REFRESH_TOKEN }} 
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_secret: ${{ secrets.CLIENT_SECRET }}
+          refresh_token: ${{ secrets.REFRESH_TOKEN }}
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -f chrome-extension.zip
+          echo "Cleaned up temporary files" 

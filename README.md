@@ -83,4 +83,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Manual Testing
 
-1. Open Chrome and go to `
+[Google instructions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world)
+
+### TL:DR
+
+Open chrome extensions settings: "chrome://extensions"
+Toggle "Developer mode"
+Click the new "Load unpacked" button
+Select the chrome folder.
+When the extension appears is it most useful to pin it to allow the popover features
