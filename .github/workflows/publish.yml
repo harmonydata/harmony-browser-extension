@@ -23,9 +23,9 @@ jobs:
         with:
           extension: ${{ secrets.EXTENSION_ID }}
           zip: chrome-extension.zip
-          client_id: ${{ secrets.CLIENT_ID }}
-          client_secret: ${{ secrets.CLIENT_SECRET }}
-          refresh_token: ${{ secrets.REFRESH_TOKEN }}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
 
       - name: Clean up
         if: always()
