@@ -10,12 +10,20 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 document.getElementById("submitPdf").addEventListener("click", function () {
   const text = document.getElementById("pdfText").value;
   if (text) {
+    // Debug logging for popup text submission
+    console.log("Submitting text from popup:", text);
+    console.log("Text length:", text.length);
+    console.log("First 100 chars:", text.substring(0, 100));
+    console.log("Contains newlines:", text.includes("\n"));
+    
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const currentTab = tabs[0];
+      // First try to use the API approach
       chrome.runtime.sendMessage({
         action: "processPdfText",
         text: text,
         tab: currentTab,
+        useApi: true // Indicate that we want to try the API first
       });
       window.close();
     });
@@ -71,12 +79,17 @@ function updateHistory() {
       item.style.cursor = "pointer";
       item.addEventListener("click", () => {
         // Send message to background script to open URL
-        chrome.runtime.sendMessage({
-          action: "openHarmonyUrl",
-          url: history[index].harmonyUrl,
-        });
-        // Close the popup
-        window.close();
+        if (history[index].harmonyUrl) {
+          chrome.runtime.sendMessage({
+            action: "openHarmonyUrl",
+            url: history[index].harmonyUrl,
+          });
+          // Close the popup
+          window.close();
+        } else {
+          // Handle case where harmonyUrl is not available
+          console.log("No Harmony URL available for this item");
+        }
       });
     });
   });
